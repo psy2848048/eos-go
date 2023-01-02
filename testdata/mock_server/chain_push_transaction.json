@@ -1,0 +1,77 @@
+{
+    "transaction_id": "203b76d8740587ad1898348e76799378eb013d2ad1b285f54e0abfa89769d850",
+    "processed": {
+      "id": "203b76d8740587ad1898348e76799378eb013d2ad1b285f54e0abfa89769d850",
+      "block_num": 27873928,
+      "block_time": "2022-07-20T09:20:41",
+      "producer_block_id": null,
+      "receipt": {
+        "status": "executed",
+        "cpu_usage_us": 163,
+        "net_usage_words": 35
+      },
+      "elapsed": 163,
+      "net_usage": 280,
+      "scheduled": false,
+      "action_traces": [
+        {
+          "action_ordinal": 1,
+          "creator_action_ordinal": 0,
+          "closest_unnotified_ancestor_action_ordinal": 0,
+          "receipt": {
+            "receiver": "datamgr",
+            "act_digest": "2071a841c039d58517cd67502319a73b219b3f4be5fd922b3419aea3fc17e9c3",
+            "global_sequence": 27875025,
+            "recv_sequence": 55,
+            "auth_sequence": [
+              [
+                "datamgr",
+                66
+              ]
+            ],
+            "code_sequence": 6,
+            "abi_sequence": 5
+          },
+          "receiver": "datamgr",
+          "act": {
+            "account": "datamgr",
+            "name": "dataopt",
+            "authorization": [
+              {
+                "actor": "datamgr",
+                "permission": "active"
+              }
+            ],
+            "data": {
+              "source_org": "\nproject_i",
+              "dest_org": "\u0000\bmetadata\u000f{test@20220719}\u0003opt\u0007publish\nsource_org\tstarchain\rresource_type\u0007dataset\bresource\tojsodfd90",
+              "project_id": "create_by",
+              "metadata": "小明",
+              "resource_type": "extra_params",
+              "resource": "{\"aa\":111}",
+              "opt": "account",
+              "create_by": "datamgr",
+              "extra_params": "dest_org"
+            },
+            "hex_data": "0a0a70726f6a6563745f696400086d657461646174610f7b746573744032303232303731397d036f7074077075626c6973680a736f757263655f6f72670973746172636861696e0d7265736f757263655f747970650764617461736574087265736f75726365096f6a736f6466643930096372656174655f627906e5b08fe6988e0c65787472615f706172616d730a7b226161223a3131317d076163636f756e7407646174616d677208646573745f6f72670861736961696e666f"
+          },
+          "context_free": false,
+          "elapsed": 40,
+          "console": "",
+          "trx_id": "203b76d8740587ad1898348e76799378eb013d2ad1b285f54e0abfa89769d850",
+          "block_num": 27873928,
+          "block_time": "2022-07-20T09:20:41",
+          "producer_block_id": null,
+          "account_ram_deltas": [],
+          "account_disk_deltas": [],
+          "except": null,
+          "error_code": null,
+          "return_value_hex_data": "",
+          "inline_traces": []
+        }
+      ],
+      "account_ram_delta": null,
+      "except": null,
+      "error_code": null
+    }
+}

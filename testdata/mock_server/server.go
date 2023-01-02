@@ -37,6 +37,11 @@ func CreateAndActivateRestMockServer(rootDir string) {
 	)
 
 	httpmock.RegisterResponder(
+		POST, "http://localhost/v1/chain/push_transaction",
+		httpmock.NewStringResponder(http.StatusOK, OpenFile(rootDir, "chain_push_transaction.json")),
+	)
+
+	httpmock.RegisterResponder(
 		POST, "http://localhost/v1/chain/get_block_header_state",
 		httpmock.NewStringResponder(http.StatusOK, OpenFile(rootDir, "chain_get_block_header_state.json")),
 	)
