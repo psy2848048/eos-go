@@ -88,6 +88,20 @@ func TestAPIGetInfo(t *testing.T) {
 	assert.JSONEq(t, expectedJSON, string(actualJSON))
 }
 
+func TestAPIPushTransaction(t *testing.T) {
+	inputTx := &PackedTransaction{}
+
+	broadcastTxResp, err := api.PushTransaction(context.Background(), inputTx)
+	assert.NoError(t, err)
+
+	actualJSON, err := json.MarshalIndent(broadcastTxResp, "", "    ")
+	assert.NoError(t, err)
+
+	expectedJSON := mockserver.OpenFile(".", "chain_push_transaction.json")
+
+	assert.JSONEq(t, expectedJSON, string(actualJSON))
+}
+
 func TestAPIGetAbi(t *testing.T) {
 	abiResp, err := api.GetABI(context.Background(), "tippedtipped")
 	assert.NoError(t, err)

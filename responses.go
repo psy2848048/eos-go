@@ -124,13 +124,16 @@ type ActionTrace struct {
 	TransactionID                          Checksum256         `json:"trx_id"`
 	BlockNum                               uint32              `json:"block_num"`
 	BlockTime                              BlockTimestamp      `json:"block_time"`
-	ProducerBlockID                        Checksum256         `json:"producer_block_id" eos:"optional"`
+	ProducerBlockID                        *Checksum256        `json:"producer_block_id" eos:"optional"` // changed on Antelope/leap 2.0
 	AccountRAMDeltas                       []*AccountRAMDelta  `json:"account_ram_deltas"`
-	Except                                 *Except             `json:"except,omitempty" eos:"optional"`
-	ErrorCode                              *Uint64             `json:"error_code,omitempty" eos:"optional"`
+	AccountDiskDeltas                      []*AccountDiskDelta `json:"account_disk_deltas"`       // added Antelope/leap 2.0
+	Except                                 *Except             `json:"except" eos:"optional"`     // added Antelope/leap 2.0
+	ErrorCode                              *Uint64             `json:"error_code" eos:"optional"` // added Antelope/leap 2.0
+	ReturnValueHexData                     HexBytes            `json:"return_value_hex_data"`     // added Antelope/leap 2.0
 
-	// Not present in EOSIO >= 1.8.x
-	InlineTraces []ActionTrace `json:"inline_traces,omitempty" eos:"-"`
+	// Present again in Antelope/leap >= 2.0
+	// InlineTraces []ActionTrace `json:"inline_traces,omitempty" eos:"-"`
+	InlineTraces []ActionTrace `json:"inline_traces" eos:"optional"`
 }
 
 type AccountDelta struct {
@@ -142,6 +145,13 @@ type AccountDelta struct {
 //
 // Deprecated: Use AccountDelta instead which is the struct name used in EOSIO
 type AccountRAMDelta struct {
+	Account AccountName `json:"account"`
+	Delta   Int64       `json:"delta"`
+}
+
+// AccountDiskDelta
+// Added Antelope/leap 2.0
+type AccountDiskDelta struct {
 	Account AccountName `json:"account"`
 	Delta   Int64       `json:"delta"`
 }
@@ -370,29 +380,56 @@ type AccountResult struct {
 }
 
 // PushTransactionFullResp unwraps the responses from a successful `push_transaction`.
-// FIXME: REVIEW the actual expectOutput, things have moved here.
 type PushTransactionFullResp struct {
-	StatusCode    string
 	TransactionID string               `json:"transaction_id"`
 	Processed     TransactionProcessed `json:"processed"` // WARN: is an `fc::variant` in server..
-	BlockID       string               `json:"block_id"`
+	// BlockID       string               `json:"block_id"`
 }
 
 type TransactionProcessed struct {
-	Status               string      `json:"status"`
-	ID                   Checksum256 `json:"id"`
-	BlockNum             uint32      `json:"block_num"`
-	ActionTraces         []Trace     `json:"action_traces"`
-	DeferredTransactions []string    `json:"deferred_transactions"` // that's not right... dig to find what's there..
+	ID              Checksum256         `json:"id"`
+	BlockNum        uint32              `json:"block_num"`
+	BlockTime       BlockTimestamp      `json:"block_time"`
+	ProducerBlockID *Checksum256        `json:"producer_block_id"`
+	Receipt         TxProcessingReceipt `json:"receipt"`
+	Elapsed         uint64              `json:"elapsed"`
+	NetUsage        uint64              `json:"net_usage"`
+	Scheduled       bool                `json:"scheduled"`
+	ActionTraces    []ActionTrace       `json:"action_traces"`
+	AccountRamDelta *AccountRAMDelta    `json:"account_ram_delta"`
+	Except          *Except             `json:"except"`
+	ErrorCode       *uint64             `json:"error_code"`
+}
+
+type TxProcessingReceipt struct {
+	Status        string `json:"status"`
+	CpuUsage      uint64 `json:"cpu_usage_us"`
+	NetUsageWords uint64 `json:"net_usage_words"`
 }
 
 type Trace struct {
-	Receiver AccountName `json:"receiver"`
-	// Action     Action       `json:"act"` // FIXME: how do we unpack that ? what's on the other side anyway?
-	Console    SafeString   `json:"console"`
-	DataAccess []DataAccess `json:"data_access"`
+	ActionOrdinal                          uint64             `json:"action_ordinal"`
+	CreatorActionOrdinal                   uint64             `json:"creator_action_ordinal"`
+	ClosestUnnotifiedAncestorActionOrdinal uint64             `json:"closest_unnotified_ancestor_action_ordinal"`
+	Receipt                                ActionTraceReceipt `json:"receipt"`
+	Receiver                               AccountName        `json:"receiver"`
+	Action                                 Action             `json:"act"` // FIXME: how do we unpack that ? what's on the other side anyway?
+	ContextFree                            bool               `json:"context_free"`
+	Elapsed                                uint64             `json:"elapsed"`
+	Console                                SafeString         `json:"console"`
+	TrxId                                  Checksum256        `json:"tr_id"`
+	BlockNum                               uint64             `json:"block_num"`
+	BlockTime                              BlockTimestamp     `json:"block_time"`
+	ProducerBlockId                        Checksum256        `json:"producer_block_id,omitempty"`
+	AccountRamDeltas                       []AccountRAMDelta  `json:"account_ram_deltas"`
+	// AccountDiskDeltas
+	Except             *Except       `json:"except,omitempty"`
+	ErrorCode          *uint64       `json:"error_code,omitempty"`
+	ReturnValueHexData HexBytes      `json:"return_value_hex_data"`
+	InlineTraces       []interface{} `json:"inline_traces"`
 }
 
+// Not used in Antelope/leap 2.0
 type DataAccess struct {
 	Type     string      `json:"type"` // "write", "read"?
 	Code     AccountName `json:"code"`
